@@ -1,20 +1,20 @@
 package com.playdate.playdate;
 
 import com.google.gson.Gson;
-import com.playdate.playdate.models.ParentsDetailsModel;
-import com.playdate.playdate.models.PreviousPlayDatesModel;
-import com.playdate.playdate.models.UserDetailsCollection;
+import com.playdate.playdate.configuration.SpringMongoConfig;
+import com.playdate.playdate.model.ParentsDetails;
+import com.playdate.playdate.model.PreviousPlayDates;
+import com.playdate.playdate.model.UserDetails;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.data.mongodb.core.MongoOperations;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import static io.restassured.RestAssured.given;
-import static io.restassured.mapper.ObjectMapperType.JACKSON_2;
 
 public class MockUsers {
 
@@ -157,7 +157,7 @@ public class MockUsers {
 
     @Test
     public void insertUsers(){
-        ParentsDetailsModel parentsDetailsModel = new ParentsDetailsModel();
+        ParentsDetails parentsDetailsModel = new ParentsDetails();
 
 
 //        private List<String> allergies;
@@ -167,19 +167,19 @@ public class MockUsers {
         GenerateRandomDataHelpers generateRandomDataHelpers = new GenerateRandomDataHelpers();
         generateTestData();
         for(int i = 0; i < numberOfUsers; i++) {
-            UserDetailsCollection userDetailsCollection = new UserDetailsCollection();
-            userDetailsCollection.setEmail("email"+getUid()+"@gmail.com");
-            userDetailsCollection.setUsername(username.get(getRandomNumber()));
-            userDetailsCollection.setPassword(password.get(getRandomNumber()));
-            userDetailsCollection.setNickName(nickName.get(getRandomNumber()));
-            userDetailsCollection.setAge(age.get(getRandomNumber()));
-            userDetailsCollection.setCountryBorn(countryBorn.get(getRandomNumber()));
-            userDetailsCollection.setCountryBorn(ethnicity.get(getRandomNumber()));
-            userDetailsCollection.setDob(dob.get(getRandomNumber()));
-            userDetailsCollection.setSchoolName(schoolName.get(getRandomNumber()));
-            userDetailsCollection.setSchoolName(address.get(getRandomNumber()));
+            UserDetails userDetails = new UserDetails();
+            userDetails.setEmail("email"+getUid()+"@gmail.com");
+            userDetails.setUsername(username.get(getRandomNumber()));
+            userDetails.setPassword(password.get(getRandomNumber()));
+            userDetails.setNickName(nickName.get(getRandomNumber()));
+            userDetails.setAge(age.get(getRandomNumber()));
+            userDetails.setCountryBorn(countryBorn.get(getRandomNumber()));
+            userDetails.setCountryBorn(ethnicity.get(getRandomNumber()));
+            userDetails.setDob(dob.get(getRandomNumber()));
+            userDetails.setSchoolName(schoolName.get(getRandomNumber()));
+            userDetails.setSchoolName(address.get(getRandomNumber()));
 
-            ParentsDetailsModel parentsDetailsModel1 = new ParentsDetailsModel();
+            ParentsDetails parentsDetailsModel1 = new ParentsDetails();
             parentsDetailsModel1.setFatherName(fatherName.get(getRandomNumber()));
             parentsDetailsModel1.setMotherName(motherName.get(getRandomNumber()));
             parentsDetailsModel1.setFatherOccupation(fatherOccupation.get(getRandomNumber()));
@@ -188,32 +188,37 @@ public class MockUsers {
             parentsDetailsModel1.setMotherContactNumber(motherContactNumber.get(getRandomNumber()));
             parentsDetailsModel1.setFatherAge(fatherAge.get(getRandomNumber()));
             parentsDetailsModel1.setMotherAge(motherAge.get(getRandomNumber()));
-            userDetailsCollection.setParentsDetails(parentsDetailsModel1);
+            userDetails.setParentsDetails(parentsDetailsModel1);
 
-            List<PreviousPlayDatesModel> previousPlayDatesModelList = new ArrayList<>();
-            PreviousPlayDatesModel previousPlayDatesModel1 = new PreviousPlayDatesModel();
-            previousPlayDatesModel1.setWhen(when.get(getRandomNumber()));
-            previousPlayDatesModel1.setWhere(when.get(getRandomNumber()));
-            previousPlayDatesModel1.setDuration(when.get(getRandomNumber()));
+            List<PreviousPlayDates> previousPlayDatesList = new ArrayList<>();
+            PreviousPlayDates previousPlayDates1 = new PreviousPlayDates();
+            previousPlayDates1.setWhen(when.get(getRandomNumber()));
+            previousPlayDates1.setWhere(when.get(getRandomNumber()));
+            previousPlayDates1.setDuration(when.get(getRandomNumber()));
 
-            PreviousPlayDatesModel previousPlayDatesModel2 = new PreviousPlayDatesModel();
-            previousPlayDatesModel2.setWhen(when.get(getRandomNumber()));
-            previousPlayDatesModel2.setWhere(when.get(getRandomNumber()));
-            previousPlayDatesModel2.setDuration(when.get(getRandomNumber()));
+            PreviousPlayDates previousPlayDates2 = new PreviousPlayDates();
+            previousPlayDates2.setWhen(when.get(getRandomNumber()));
+            previousPlayDates2.setWhere(when.get(getRandomNumber()));
+            previousPlayDates2.setDuration(when.get(getRandomNumber()));
 
-            previousPlayDatesModelList.add(previousPlayDatesModel1);
-            previousPlayDatesModelList.add(previousPlayDatesModel2);
-            userDetailsCollection.setPreviousPlayDates(previousPlayDatesModelList);
+            previousPlayDatesList.add(previousPlayDates1);
+            previousPlayDatesList.add(previousPlayDates2);
+            userDetails.setPreviousPlayDates(previousPlayDatesList);
 
             Gson gson = new Gson();
-            String request = gson.toJson(userDetailsCollection);
+            String request = gson.toJson(userDetails);
 
-            Response response = given().log().all()
-                    .contentType(ContentType.JSON)
-                    .body(userDetailsCollection, JACKSON_2)
-                    .when().post("http://localhost:8080/userDetails").thenReturn();
-            System.out.println("STATUS CODE: "+response.getStatusCode());
-            Assert.assertTrue(response.getStatusCode() == 201);
+//            Response response = given().log().all()
+//                    .contentType(ContentType.JSON)
+//                    .body(userDetails, JACKSON_2)
+//                    .when().post("http://localhost:8080/userDetails").thenReturn();
+//            System.out.println("STATUS CODE: "+response.getStatusCode());
+//            //Assert.assertTrue(response.getStatusCode() == 201);
+            ApplicationContext ctx =
+                    new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+            MongoOperations mongoOperation =
+                    (MongoOperations) ctx.getBean("mongoTemplate");
+            mongoOperation.save(userDetails);
         }
     }
 
