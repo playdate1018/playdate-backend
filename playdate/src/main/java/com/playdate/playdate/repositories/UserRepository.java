@@ -10,20 +10,14 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
-@CrossOrigin
 @RepositoryRestResource(collectionResourceRel = "userDetails", path = "userDetails")
 public interface UserRepository extends MongoRepository<UserDetails,String> {
-    List<UserDetails> email(@Param("email") String email);
-    List<UserDetails> findByUsername(@Param("username") String username);
-    List<UserDetails> findByNickName(@Param("nickname") String nickname);
-    List<UserDetails> findByAge(@Param("age") String age);
-    List<UserDetails> findByCountryBorn(@Param("countryborn") String countryborn);
-    List<UserDetails> findByEthnicity(@Param("ethnicity") String ethnicity);
-    List<UserDetails> findBySchoolName(@Param("schoolname") String schoolname);
-    List<UserDetails> findByUsernameStartingWith(@Param("startingWith") String startingWith);
 
+    UserDetails findByEmail(String email);
+    UserDetails findByUsername(String username);
 
     UserDetails findByUsernameAndPassword(String username, String password);
+    UserDetails findByEmailAndPassword(String email, String password);
 
 }
 

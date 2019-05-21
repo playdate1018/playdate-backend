@@ -1,22 +1,25 @@
 package com.playdate.playdate;
 
 import com.google.gson.Gson;
-import com.playdate.playdate.configuration.SpringMongoConfig;
+import com.mongodb.MongoClient;
+import com.playdate.playdate.model.EventDetails;
 import com.playdate.playdate.model.ParentsDetails;
 import com.playdate.playdate.model.PreviousPlayDates;
 import com.playdate.playdate.model.UserDetails;
-import io.restassured.http.ContentType;
-import io.restassured.response.Response;
 import org.junit.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 public class MockUsers {
+    @Autowired
+    private MongoOperations mongoOperation=new MongoTemplate(new MongoClient("127.0.0.1"),"playdate");
 
     private static int numberOfUsers=100;
 
@@ -24,7 +27,7 @@ public class MockUsers {
     private static int MAX = 3;
 
     private static int MIN_UID = 10;
-    private static int MAX_UID = 5000;
+    private static int MAX_UID = 500000;
 
 
     static List<String> fatherName = new ArrayList<>();
@@ -167,8 +170,11 @@ public class MockUsers {
         GenerateRandomDataHelpers generateRandomDataHelpers = new GenerateRandomDataHelpers();
         generateTestData();
         for(int i = 0; i < numberOfUsers; i++) {
+            String ID =UUID.randomUUID().toString();
+            String EMAIL = "email"+getUid()+"@gmail.com";
             UserDetails userDetails = new UserDetails();
-            userDetails.setEmail("email"+getUid()+"@gmail.com");
+            userDetails.setId(ID);
+            userDetails.setEmail(EMAIL);
             userDetails.setUsername(username.get(getRandomNumber()));
             userDetails.setPassword(password.get(getRandomNumber()));
             userDetails.setNickName(nickName.get(getRandomNumber()));
@@ -208,17 +214,22 @@ public class MockUsers {
             Gson gson = new Gson();
             String request = gson.toJson(userDetails);
 
+            EventDetails eventDetails = new EventDetails(ID,EMAIL, LocalDateTime.now());
+            String request1 = gson.toJson(eventDetails);
+            mongoOperation.save(userDetails);
+            mongoOperation.save(eventDetails);
+            System.out.println("wait");
 //            Response response = given().log().all()
 //                    .contentType(ContentType.JSON)
 //                    .body(userDetails, JACKSON_2)
 //                    .when().post("http://localhost:8080/userDetails").thenReturn();
 //            System.out.println("STATUS CODE: "+response.getStatusCode());
 //            //Assert.assertTrue(response.getStatusCode() == 201);
-            ApplicationContext ctx =
-                    new AnnotationConfigApplicationContext(SpringMongoConfig.class);
-            MongoOperations mongoOperation =
-                    (MongoOperations) ctx.getBean("mongoTemplate");
-            mongoOperation.save(userDetails);
+//            ApplicationContext ctx =
+//                    new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+//            MongoOperations mongoOperation =
+//                    (MongoOperations) ctx.getBean("mongoTemplate");
+
         }
     }
 

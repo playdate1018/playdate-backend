@@ -15,7 +15,8 @@ import java.util.List;
 public class UserDetails {
 
     @Id
-    @Indexed
+    private String id;
+
     @Email
     private String email;
 
