@@ -1,7 +1,7 @@
-package com.playdate.playdate.controller;
+package com.playdate.controller;
 
-import com.playdate.playdate.model.request.LoginVerificationRequest;
-import com.playdate.playdate.service.LoginService;
+import com.playdate.model.request.LoginVerificationRequest;
+import com.playdate.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;

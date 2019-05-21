@@ -1,4 +1,4 @@
-package com.playdate.playdate.model;
+package com.playdate.model;
 
 import lombok.Getter;
 import lombok.Setter;

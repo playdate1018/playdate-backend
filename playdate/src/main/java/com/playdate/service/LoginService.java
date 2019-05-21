@@ -1,13 +1,10 @@
-package com.playdate.playdate.service;
+package com.playdate.service;
 
-import com.mongodb.MongoClient;
-import com.playdate.playdate.model.UserDetails;
-import com.playdate.playdate.model.request.LoginVerificationRequest;
-import com.playdate.playdate.repositories.UserRepository;
+import com.playdate.model.UserDetails;
+import com.playdate.model.request.LoginVerificationRequest;
+import com.playdate.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 @Service

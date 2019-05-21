@@ -1,11 +1,11 @@
-package com.playdate.playdate;
+package com.playdate;
 
 import com.google.gson.Gson;
 import com.mongodb.MongoClient;
-import com.playdate.playdate.model.EventDetails;
-import com.playdate.playdate.model.ParentsDetails;
-import com.playdate.playdate.model.PreviousPlayDates;
-import com.playdate.playdate.model.UserDetails;
+import com.playdate.model.EventDetails;
+import com.playdate.model.ParentsDetails;
+import com.playdate.model.PreviousPlayDates;
+import com.playdate.model.UserDetails;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;

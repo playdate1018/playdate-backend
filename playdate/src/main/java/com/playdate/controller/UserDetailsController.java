@@ -1,11 +1,8 @@
-package com.playdate.playdate.controller;
+package com.playdate.controller;
 
-import com.mongodb.MongoClient;
-import com.playdate.playdate.model.UserDetails;
+import com.playdate.model.UserDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

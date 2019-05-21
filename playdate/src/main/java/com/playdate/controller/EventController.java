@@ -1,17 +1,16 @@
-package com.playdate.playdate.controller;
+package com.playdate.controller;
 
-import com.playdate.playdate.model.EventDetails;
-import com.playdate.playdate.model.UserDetails;
-import com.playdate.playdate.repositories.EventRepository;
-import com.playdate.playdate.repositories.UserRepository;
+import com.playdate.model.UserDetails;
+import com.playdate.model.EventDetails;
+import com.playdate.repositories.EventRepository;
+import com.playdate.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -26,6 +25,9 @@ public class EventController {
     @PostMapping("/createEvent")
     public void createEvent(@RequestBody EventDetails eventDetails){
         UserDetails userDetails = userRepository.findByEmail(eventDetails.getEmail());
+
+        if (userDetails == null) throw new ResourceNotFoundException();
+
         eventDetails.setId(userDetails.getId());
         eventDetails.setPlayDateCreatedOn(LocalDateTime.now());
         mongoOperations.save(eventDetails);

@@ -1,7 +1,7 @@
-package com.playdate.playdate.controller;
+package com.playdate.controller;
 
-import com.playdate.playdate.model.UserDetails;
-import com.playdate.playdate.service.RegistrationService;
+import com.playdate.model.UserDetails;
+import com.playdate.service.RegistrationService;
 import io.restassured.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;

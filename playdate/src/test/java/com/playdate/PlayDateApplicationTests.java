@@ -1,4 +1,4 @@
-package com.playdate.playdate;
+package com.playdate;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

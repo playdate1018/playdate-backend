@@ -1,4 +1,4 @@
-package com.playdate.playdate.configuration;
+package com.playdate.configuration;
 
 import com.mongodb.MongoClient;
 import org.springframework.context.annotation.Bean;

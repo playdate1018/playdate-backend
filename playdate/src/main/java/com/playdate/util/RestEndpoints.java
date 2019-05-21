@@ -1,4 +1,4 @@
-package com.playdate.playdate.util;
+package com.playdate.util;
 
 public class RestEndpoints {
     //BASE URIs

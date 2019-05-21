@@ -1,4 +1,4 @@
-package com.playdate.playdate.model;
+package com.playdate.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
