@@ -1,52 +1,91 @@
 package com.playdate.controller;
 
-import com.playdate.payload.UploadFileResponse;
+import com.playdate.model.UserDetails;
+import com.playdate.model.request.ImageBase64;
+import com.playdate.repositories.UserRepository;
 import com.playdate.service.FileStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Base64;
 
+@CrossOrigin
 @RestController
+@RequestMapping("/playdate")
 public class FileController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
+    private  MongoOperations mongoOperations;
+
     @Autowired
     private FileStorageService fileStorageService;
 
-    @PostMapping("/uploadFile")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
-        String fileName = fileStorageService.storeFile(file);
+    @Autowired
+    private UserRepository userRepository;
 
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/downloadFile/")
-                .path(fileName)
-                .toUriString();
-
-        return new UploadFileResponse(fileName, fileDownloadUri,
-                file.getContentType(), file.getSize());
+    @PostMapping("/uploadFile/{email}")
+    public boolean uploadimage(@RequestBody ImageBase64 imgObj, @PathVariable String email){
+        Boolean save = false;
+        try{
+            UserDetails userDetails = userRepository.findByEmail(email);
+            if(userDetails!=null){
+                userDetails.setImageFileBinary(imgObj.getBase64Image());
+                userRepository.save(userDetails);
+                save=true;
+            }
+        }catch (Exception e){e.printStackTrace();}
+        return save;
     }
 
-    @PostMapping("/uploadMultipleFiles")
-    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
-        return Arrays.asList(files)
-                .stream()
-                .map(file -> uploadFile(file))
-                .collect(Collectors.toList());
-    }
+//    @PostMapping("/uploadFile/{email}")
+//    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file,
+//                                         @PathVariable String email) {
+//        FileInputStream binaryFile;
+//        try{
+//            UserDetails userDetails = userRepository.findByEmail(email);
+//
+//            byte[] imageBytes = file.getBytes();
+//            String s = Base64.getEncoder().encodeToString(imageBytes);
+//            userDetails.setImageFileBinary(s);
+//            binaryFile = (FileInputStream) file.getInputStream();
+////            mongoOperations.save(userDetails);
+//            //TODO: throw an exception if the image is not saved
+//            Response response = given().log().all()
+//                    .contentType(ContentType.JSON)
+//                    .body(userDetails, JACKSON_2)
+//                    .when().post(RestEndpoints.BASE_URI + RestEndpoints.USER_DETAILS).thenReturn();
+//
+//        }catch(Exception e){e.printStackTrace();}
+//
+//        String fileName = fileStorageService.storeFile(file);
+//
+//        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+//                .path("/downloadFile/")
+//                .path(fileName)
+//                .toUriString();
+//
+//        return new UploadFileResponse(fileName, fileDownloadUri,
+//                file.getContentType(), file.getSize());
+//    }
+
+//    @PostMapping("/uploadMultipleFiles")
+//    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
+//        return Arrays.asList(files)
+//                .stream()
+//                .map(file -> uploadFile(file))
+//                .collect(Collectors.toList());
+//    }
 
     @GetMapping("/downloadFile/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
@@ -72,4 +111,15 @@ public class FileController {
                 .body(resource);
     }
 
+
+    @GetMapping("/getImage/{email}")
+    public String getImageOfUser(@PathVariable String email) throws Exception{
+
+        //TODO: this is just a piece of code to convert base64 string to image file and save it locally. This can be removed.
+        byte[] imageBArray = Base64.getDecoder().decode(userRepository.findByEmail(email).getImageFileBinary());
+        FileOutputStream fileOutputStream = new FileOutputStream("/Users/manoharadepu/DEV/fileuploads/testing.jpg");
+        fileOutputStream.write(imageBArray);
+
+        return userRepository.findByEmail(email).getImageFileBinary();
+    }
 }

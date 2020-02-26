@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.Email;
+import java.util.HashMap;
 import java.util.List;
 
 @Getter
@@ -29,10 +30,9 @@ public class UserDetails {
     private List<String> disabilities;
     private String dob;
     private String schoolName;
-    private String address;
+    private Address address;
     private ParentsDetails parentsDetails;
-    private List<PreviousPlayDates> previousPlayDates;
-
+    private String imageFileBinary;
 
     public UserDetails(String username, String password) {
         this.username = username;
@@ -58,9 +58,6 @@ public class UserDetails {
                 ", schoolName='" + schoolName + '\'' +
                 ", address='" + address + '\'' +
                 ", parentsDetails=" + parentsDetails +
-                ", previousPlayDates=" + previousPlayDates +
                 '}';
     }
-
-
 }

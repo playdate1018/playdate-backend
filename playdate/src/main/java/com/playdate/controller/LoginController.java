@@ -32,11 +32,9 @@ public class LoginController {
     @PostMapping("/forgotpassword")
     public void forgotPassword(@RequestBody @Valid LoginVerificationRequest loginVerificationRequest){
         Boolean changePassword = loginService.changePassword(loginVerificationRequest);
-
         if(changePassword)
             System.out.println("Password changed successfully");
         else
             System.out.println("Unable to update the password");
     }
-
 }

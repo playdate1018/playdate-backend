@@ -13,12 +13,14 @@ import java.util.List;
 @RepositoryRestResource(collectionResourceRel = "eventDetails", path = "eventDetails")
 public interface EventRepository extends MongoRepository<EventDetails,String> {
 
-    EventDetails findByEmail(String email);
-    EventDetails findByPlayDateOn(String playDateOn);
+    List<EventDetails> findByCreatedBy(String createdBy);
+    EventDetails findByEventGuid(String eventGuid);
 
-    @Query("{ 'playDateOn' : {$gte: ?0, $lt:?1}}")
-    List<EventDetails> findEventDetailsByDateBetween(LocalDateTime from, LocalDateTime to);
-
-    @Query("{ 'playDateCreatedOn' : {$gte: ?0, $lt:?1}}")
-    List<EventDetails> findEventDetailsByDateCreatedBetween(LocalDateTime from, LocalDateTime to);
+//    EventDetails findByPlayDateOn(String playDateOn);
+//
+//    @Query("{ 'playDateOn' : {$gte: ?0, $lt:?1}}")
+//    List<EventDetails> findEventDetailsByDateBetween(LocalDateTime from, LocalDateTime to);
+//
+//    @Query("{ 'playDateCreatedOn' : {$gte: ?0, $lt:?1}}")
+//    List<EventDetails> findEventDetailsByDateCreatedBetween(LocalDateTime from, LocalDateTime to);
 }

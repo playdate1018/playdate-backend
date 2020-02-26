@@ -5,10 +5,12 @@ import com.playdate.util.RestEndpoints;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.mapper.ObjectMapperType.JACKSON_2;
 
+@CrossOrigin
 @Service
 public class RegistrationService {
     public Response registerUser(UserDetails userDetails){

@@ -1,6 +1,5 @@
-package com.playdate.advice;
+package com.playdate.exception.advice;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
