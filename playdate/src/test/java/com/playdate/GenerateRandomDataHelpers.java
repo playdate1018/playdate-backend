@@ -1,4 +1,4 @@
-package com.playdate.playdate;
+package com.playdate;
 
 import java.util.ArrayList;
 import java.util.List;
